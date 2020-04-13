@@ -3,11 +3,11 @@
   let cols = 15;
   let grid;
 
-  initGrid();
+  // initGrid();
 
-  function initGrid() {
-    grid = [...Array(rows)].map(x => Array(cols).fill(0));
-  }
+  // function initGrid() {
+  //   grid = [...Array(rows)].map(x => Array(cols).fill(0));
+  // }
 
 
 
