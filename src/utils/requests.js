@@ -14,10 +14,5 @@ export async function setNewName(id, name) {
 }
 
 export async function fetchAllStats() {
-  // return new Promise((resolve, reject) => {
     return axios.get(BASE_URL + "/api/player")
-    // .then((res) => {
-  //     resolve(res)
-  //   });
-  // });
 }

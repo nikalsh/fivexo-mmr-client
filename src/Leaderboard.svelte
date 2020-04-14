@@ -1,6 +1,8 @@
 <script>
   import * as requests from "./utils/requests.js";
 
+  let leaderboard;
+
   function getWinPercent(player) {
     const winPercent = calculateWinPercent(player);
     return isNaN(winPercent) ? 0 : winPercent;
@@ -11,6 +13,17 @@
       (player.wins / (player.wins + player.losses + player.ties)) * 100
     );
   }
+
+  async function updateLeaderboard() {
+    return requests.fetchAllStats();
+  }
+
+  setInterval(async () => {
+    let res = await updateLeaderboard();
+    leaderboard = res.data;
+  }, 1000)
+
+
 </script>
 
 <style>
@@ -26,6 +39,7 @@
     border-collapse: collapse;
     width: 100%;
     /* padding: 150px; */
+    box-shadow: 10px 10px 1px black;
   }
 
   td,
@@ -37,6 +51,10 @@
 
   tr:nth-child(even) {
     background-color: #dddddd;
+  }
+
+  tr:nth-child(odd) {
+    background-color: white;
   }
 
   .greentext {
@@ -66,10 +84,9 @@
 </style>
 
 <main>
-  {#await requests.fetchAllStats()}
-    <p>Loading leaderboard..</p>  
-
-  {:then leaderboard}
+{#if !leaderboard}
+    <p>Loading leaderboard..</p>
+{:else}
     <table class="leaderboard">
       <tr>
         <th>Level</th>
@@ -82,7 +99,7 @@
         <th>MMR</th>
       </tr>
 
-      {#each leaderboard.data as player, i}
+      {#each leaderboard as player, i}
         <tr>
           <td class={i === 0 ? 'goldentext' : 'bold'}>{player.level}</td>
           <td class="bold">{player.name}</td>
@@ -95,7 +112,5 @@
         </tr>
       {/each}
     </table>
-  {:catch error}
-    <p style="color: red">{error.message}</p>
-  {/await}
+  {/if}
 </main>
