@@ -108,7 +108,6 @@
   <div class="wrapper">
     <p>You</p>
     <table>
-
       <tr>
         <td class="bold">Name</td>
         <td>{player.name}</td>
@@ -137,7 +136,6 @@
         <td class="bold">MMR</td>
         <td>{player.experience}</td>
       </tr>
-
     </table>
 
     <p>

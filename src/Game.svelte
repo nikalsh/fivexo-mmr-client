@@ -6,25 +6,29 @@
   let cols = 15;
   let grid;
 
-  let character, turn;
+  let character, turn = false;
+  let gameOver = false;
 
-  const gameCharacterStoreUnsubscribe = gameCharacterStore.subscribe(characterStore => {
-    if (characterStore !== undefined) {
-      character = characterStore.character;
-      turn = characterStore.turn;
+  const gameCharacterStoreUnsubscribe = gameCharacterStore.subscribe(
+    characterStore => {
+      if (characterStore) {
+        character = characterStore.character;
+        turn = characterStore.turn;
+      }
+    }
+  );
+
+  const gameStoreUnsubscribe = gameStore.subscribe(game => {
+    if (game) {
+      grid = game.grid;
+      gameOver = game.gameOver;
     }
   });
 
-const gameStoreUnsubscribe = gameStore.subscribe(game => {
-  if (game !== undefined) {
-    grid = game.grid;
-  }
-})
-
-  const retardedBooleanExpression = (character, turn) =>
-    !!!character && !!!turn ? true : character !== turn;
-
-  const myTurn = (character, turn) => !retardedBooleanExpression(character, turn)
+  
+  const canPlace = (character, turn, gameOver) =>  myTurn(character, turn) && !gameOver
+ 
+  const myTurn = (character, turn) => ((!!character && !!turn) && turn == character)
 
   onDestroy(gameCharacterStoreUnsubscribe, gameStoreUnsubscribe);
 
@@ -32,8 +36,8 @@ const gameStoreUnsubscribe = gameStore.subscribe(game => {
     grid = [...Array(rows)].map(x => Array(cols).fill(" "));
   }
 
-  function handleClick(i, j) {
-    if (myTurn(character, turn)) {
+  function handleClick(i, j, character, turn, gameOver) {
+    if (canPlace(character, turn, gameOver)) {
       $gameSocketStore.send(i + " " + j);
       grid[i][j] = $gameCharacterStore.character;
       console.log(i + " " + j);
@@ -59,6 +63,7 @@ const gameStoreUnsubscribe = gameStore.subscribe(game => {
 
   .enabled {
     cursor: pointer;
+    background-color: pink;
   }
 </style>
 
@@ -67,9 +72,9 @@ const gameStoreUnsubscribe = gameStore.subscribe(game => {
   {#each grid as row, i}
     {#each row as col, j}
       <button
-        class:enabled={myTurn(character, turn)}
-        disabled={!myTurn(character, turn)}
-        on:click={() => handleClick(i, j)}>
+        class:enabled={canPlace(character, turn, gameOver)}
+        disabled={!canPlace(character, turn, gameOver)}
+        on:click={() => handleClick(i, j, character, turn, gameOver)}>
         {grid[i][j]}
       </button>
     {/each}
