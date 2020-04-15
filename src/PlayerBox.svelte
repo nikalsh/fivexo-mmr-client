@@ -14,10 +14,6 @@
 
   onDestroy(unsubscribe);
 
-
-  console.log($playerStore);
-  
-
   async function setName(name) {
     if (name) {
       let res = await requests.setNewName(player.id, name);
@@ -104,58 +100,56 @@
 </style>
 
 <gui>
-
   <div class="wrapper">
-    <p>You</p>
-    <table>
-      <tr>
-        <td class="bold">Name</td>
-        <td>{player.name}</td>
-      </tr>
-      <tr>
-        <td class="bold">ID</td>
-        <td>{player.id}</td>
-      </tr>
-      <tr>
-        <td class="bold">Level</td>
-        <td>{player.level}</td>
-      </tr>
-      <tr>
-        <td class="bold">Wins</td>
-        <td>{player.wins}</td>
-      </tr>
-      <tr>
-        <td class="bold">Losses</td>
-        <td>{player.losses}</td>
-      </tr>
-      <tr>
-        <td class="bold">Ties</td>
-        <td>{player.ties}</td>
-      </tr>
-      <tr>
-        <td class="bold">MMR</td>
-        <td>{player.experience}</td>
-      </tr>
-    </table>
-
-    <p>
-      <button
-        on:click={() => {
-          showOptions = !showOptions;
-        }}
-        class="link">
-        Clicky
-      </button>
-    </p>
-
-    {#if showOptions}
+    {#if player}
+      <p>You</p>
+      <table>
+        <tr>
+          <td class="bold">Name</td>
+          <td>{player.name}</td>
+        </tr>
+        <tr>
+          <td class="bold">ID</td>
+          <td>{player.id}</td>
+        </tr>
+        <tr>
+          <td class="bold">Level</td>
+          <td>{player.level}</td>
+        </tr>
+        <tr>
+          <td class="bold">Wins</td>
+          <td>{player.wins}</td>
+        </tr>
+        <tr>
+          <td class="bold">Losses</td>
+          <td>{player.losses}</td>
+        </tr>
+        <tr>
+          <td class="bold">Ties</td>
+          <td>{player.ties}</td>
+        </tr>
+        <tr>
+          <td class="bold">MMR</td>
+          <td>{player.experience}</td>
+        </tr>
+      </table>
       <p>
-        Name
-        <input bind:value={name} />
+        <button
+          on:click={() => {
+            showOptions = !showOptions;
+          }}
+          class="link">
+          Clicky
+        </button>
       </p>
-
-      <button on:click={() => setName(name)}>Save</button>
-      <button on:click={resetId}>Reset ID</button>
+      {#if showOptions}
+        <p>
+          Name
+          <input bind:value={name} />
+        </p>
+        <button on:click={() => setName(name)}>Save</button>
+        <button on:click={resetId}>Reset ID</button>
+      {/if}
     {/if}
 
   </div>

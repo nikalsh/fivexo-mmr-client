@@ -3,12 +3,16 @@
   import Game from "./Game.svelte";
   import PlayerBox from "./PlayerBox.svelte";
   import OpponentBox from "./OpponentBox.svelte";
-  import GameButtons from "./GameButtons.svelte"
+  import GameButtons from "./GameButtons.svelte";
   import { onMount } from "svelte";
   import * as requests from "./utils/requests.js";
-  import { playerStore } from "./stores.js";
+  import { playerStore, gameStore } from "./stores.js";
   import * as cookies from "./utils/cookies.js";
   import { get } from "svelte/store";
+
+  let renderGame = true;
+
+  console.log("Rendergame: " + renderGame);
 
   onMount(async () => {
     await init();
@@ -24,10 +28,8 @@
       const playerIdCookie = cookies.getCookie("playerId");
       const res = await requests.fetchStatsById(playerIdCookie);
       console.log(res.data);
-      
       const player = res.data;
       playerStore.set(player);
-      
     }
   }
 </script>
@@ -64,7 +66,7 @@
     display: flex;
   }
   .leftThing {
-     position: relative;
+    position: relative;
 
     width: 25%;
     /* background-color: blue; */
@@ -95,8 +97,9 @@
     </div>
 
     <div class="content">
-      <Game />
-      <GameButtons />
+        <Game />
+      <GameButtons bind:init={renderGame} />
+      {$gameStore}
     </div>
 
     <div class="rightThing">

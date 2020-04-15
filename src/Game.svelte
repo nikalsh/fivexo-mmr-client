@@ -1,5 +1,5 @@
 <script>
-  import { gameStore, gameSocketStore, gameCharacterStore } from "./stores.js";
+  import { queueStore, gameStore, gameSocketStore, gameCharacterStore } from "./stores.js";
   import { onDestroy } from "svelte";
 
   let rows = 15;
@@ -19,20 +19,22 @@
     }
   );
 
+
+
   const gameStoreUnsubscribe = gameStore.subscribe(game => {
     if (game) {
       grid = game.grid;
       gameOver = game.gameOver;
       if (!!gameOver) {
-        console.log("closing game socket");
-        
-        $gameSocketStore.close();
+
+        // $queueStore.set(undefined)
+        // $gameSocketStore.close();
       }
     }
   });
 
   const canPlace = (character, turn, gameOver) =>
-    myTurn(character, turn) && !gameOver;
+    ((myTurn(character, turn) && !gameOver));
 
   const myTurn = (character, turn) =>
     !!character && !!turn && turn == character;
@@ -40,11 +42,11 @@
   onDestroy(gameCharacterStoreUnsubscribe, gameStoreUnsubscribe);
 
   function initGrid() {
-    grid = [...Array(rows)].map(x => Array(cols).fill(" "));
+    grid = [...Array(rows)].map(x => Array(cols).fill(""));
   }
 
-  function handleClick(i, j, character, turn, gameOver) {
-    if (canPlace(character, turn, gameOver)) {
+  function handleClick(character, turn, gameOver, i, j) {
+    if (canPlace(character, turn, gameOver) && grid[i][j] === "") {
       $gameSocketStore.send(i + " " + j);
       grid[i][j] = $gameCharacterStore.character;
       console.log(i + " " + j);
@@ -81,7 +83,7 @@
       <button
         class:enabled={canPlace(character, turn, gameOver)}
         disabled={!canPlace(character, turn, gameOver)}
-        on:click={() => handleClick(i, j, character, turn, gameOver)}>
+        on:click={() => handleClick(character, turn, gameOver, i, j)}>
         {grid[i][j]}
       </button>
     {/each}

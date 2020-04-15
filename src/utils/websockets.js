@@ -12,32 +12,32 @@ let queueSocket;
 let gameSocket;
 
 export function queue() {
-  if (!queueSocketManager.connected) {
-    queueSocket = queueSocketManager().open();
-  }
-
-  queueSocket.onmessage = function (m) {
-    try {
-      console.log(JSON.parse(m.data));
-      queueStore.set(JSON.parse(m.data));
-      console.log(get(queueStore).id);
-
-      game();
-      queueSocketManager.connected = false
-      queueSocketManager.socket.close();
-    } catch (err) {
-      console.log(m.data);
+    if (!queueSocketManager.connected) {
+      queueSocket = queueSocketManager().open();
     }
-  };
 
-  queueSocket.onopen = function () {
-    queueSocket.send("queue");
-  };
+    queueSocket.onmessage = function (m) {
+      try {
+        console.log(JSON.parse(m.data));
+        queueStore.set(JSON.parse(m.data));
+        console.log(get(queueStore).id);
 
-  queueSocket.onclose = function () {
-    console.log("websocket closed");
-    queueSocketManager.connected = false;
-  };
+        game();
+        queueSocketManager.connected = false;
+        queueSocketManager.socket.close();
+      } catch (err) {
+        console.log(m.data);
+      }
+    };
+
+    queueSocket.onopen = function () {
+      queueSocket.send("queue");
+    };
+
+    queueSocket.onclose = function () {
+      console.log("websocket closed");
+      queueSocketManager.connected = false;
+    };
 }
 
 function game() {
@@ -47,30 +47,31 @@ function game() {
 
   gameSocket.onmessage = function (m) {
     try {
-
-    if (JSON.parse(m.data).hasOwnProperty("character") && JSON.parse(m.data).hasOwnProperty("turn")) {
+      if (
+        JSON.parse(m.data).hasOwnProperty("character") &&
+        JSON.parse(m.data).hasOwnProperty("turn")
+      ) {
         gameCharacterStore.set(JSON.parse(m.data));
-      } 
-
-      else {
-        gameStore.set(JSON.parse(m.data))
-        const gcs = get(gameCharacterStore)
-        gcs.turn = get(gameStore).turn
-        gameCharacterStore.set(gcs)
+      } else {
+        gameStore.set(JSON.parse(m.data));
+        const gcs = get(gameCharacterStore);
+        gcs.turn = get(gameStore).turn;
+        gameCharacterStore.set(gcs);
       }
       console.log(JSON.parse(m.data));
     } catch (err) {
-    console.log(err);
-    
+      console.log(err);
     }
   };
 
   gameSocket.onopen = function (m) {
-      gameSocketStore.set(gameSocket)
+    gameSocketStore.set(gameSocket);
     console.log("game socket opened");
   };
 
   gameSocket.onclose = function () {
+    console.log("gamesocket closed");
+    
     gameSocketManager.connected = false;
   };
 }

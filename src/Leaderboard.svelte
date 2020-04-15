@@ -21,9 +21,7 @@
   setInterval(async () => {
     let res = await updateLeaderboard();
     leaderboard = res.data;
-  }, 1000)
-
-
+  }, 1000);
 </script>
 
 <style>
@@ -84,9 +82,9 @@
 </style>
 
 <main>
-{#if !leaderboard}
+  {#if !leaderboard}
     <p>Loading leaderboard..</p>
-{:else}
+  {:else}
     <table class="leaderboard">
       <tr>
         <th>Level</th>
@@ -98,7 +96,6 @@
         <th>Win%</th>
         <th>MMR</th>
       </tr>
-
       {#each leaderboard as player, i}
         <tr>
           <td class={i === 0 ? 'goldentext' : 'bold'}>{player.level}</td>
