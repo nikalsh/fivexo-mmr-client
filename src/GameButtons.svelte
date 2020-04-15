@@ -1,5 +1,4 @@
 <script>
-  import { playerStore, gameStore } from "./stores.js";
   import { queue } from "./utils/websockets.js";
 
   function play() {

@@ -6,7 +6,8 @@
   let cols = 15;
   let grid;
 
-  let character, turn = false;
+  let character,
+    turn = false;
   let gameOver = false;
 
   const gameCharacterStoreUnsubscribe = gameCharacterStore.subscribe(
@@ -22,13 +23,19 @@
     if (game) {
       grid = game.grid;
       gameOver = game.gameOver;
+      if (!!gameOver) {
+        console.log("closing game socket");
+        
+        $gameSocketStore.close();
+      }
     }
   });
 
-  
-  const canPlace = (character, turn, gameOver) =>  myTurn(character, turn) && !gameOver
- 
-  const myTurn = (character, turn) => ((!!character && !!turn) && turn == character)
+  const canPlace = (character, turn, gameOver) =>
+    myTurn(character, turn) && !gameOver;
+
+  const myTurn = (character, turn) =>
+    !!character && !!turn && turn == character;
 
   onDestroy(gameCharacterStoreUnsubscribe, gameStoreUnsubscribe);
 

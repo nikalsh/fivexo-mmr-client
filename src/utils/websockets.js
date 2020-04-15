@@ -23,6 +23,7 @@ export function queue() {
       console.log(get(queueStore).id);
 
       game();
+      queueSocketManager.connected = false
       queueSocketManager.socket.close();
     } catch (err) {
       console.log(m.data);
