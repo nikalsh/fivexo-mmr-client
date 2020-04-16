@@ -97,9 +97,16 @@
     </div>
 
     <div class="content">
+
+      {#if renderGame}
         <Game />
+      {:else}
+        <Game />
+      {/if}
       <GameButtons bind:init={renderGame} />
-      {$gameStore}
+
+      <Leaderboard />
+
     </div>
 
     <div class="rightThing">
@@ -109,7 +116,5 @@
     </div>
 
   </div>
-
-  <Leaderboard />
 
 </main>

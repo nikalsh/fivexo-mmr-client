@@ -25,6 +25,11 @@
     let res = await requests.fetchNewId();
     playerStore.set(res.data);
   }
+
+  setInterval(async () => {
+    let res = await requests.fetchStatsById(player.id);
+    player = res.data;
+  }, 1000);
 </script>
 
 <style>

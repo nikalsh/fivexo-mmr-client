@@ -1,6 +1,6 @@
 <script>
   import { queue } from "./utils/websockets.js";
-  import { queueStore } from "./stores.js";
+  import { queueStore, gameStore } from "./stores.js";
   import { onDestroy } from "svelte"
   export let init;
 
@@ -14,11 +14,19 @@
     }
   });
 
-  onDestroy(queueStoreUnsubscribe)
+  const gameStoreUnsubscribe = gameStore.subscribe(game => {
+    if (game !== undefined) {
+      disable = !game.gameOver
+    }
+  })
+
+  onDestroy(queueStoreUnsubscribe, gameStore)
 
   function play() {
-    init = !init;
     queue();
+    init = !init;
+
+ 
   }
 </script>
 

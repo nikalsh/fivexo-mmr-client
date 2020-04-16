@@ -1,5 +1,10 @@
 <script>
-  import { queueStore, gameStore, gameSocketStore, gameCharacterStore } from "./stores.js";
+  import {
+    queueStore,
+    gameStore,
+    gameSocketStore,
+    gameCharacterStore
+  } from "./stores.js";
   import { onDestroy } from "svelte";
 
   let rows = 15;
@@ -10,6 +15,8 @@
     turn = false;
   let gameOver = false;
 
+  let winnerCharacter = null;
+
   const gameCharacterStoreUnsubscribe = gameCharacterStore.subscribe(
     characterStore => {
       if (characterStore) {
@@ -19,14 +26,12 @@
     }
   );
 
-
-
   const gameStoreUnsubscribe = gameStore.subscribe(game => {
     if (game) {
       grid = game.grid;
       gameOver = game.gameOver;
-      if (!!gameOver) {
-
+      if (gameOver) {
+        winnerCharacter = game.winnerCharacter;
         // $queueStore.set(undefined)
         // $gameSocketStore.close();
       }
@@ -34,7 +39,7 @@
   });
 
   const canPlace = (character, turn, gameOver) =>
-    ((myTurn(character, turn) && !gameOver));
+    myTurn(character, turn) && !gameOver;
 
   const myTurn = (character, turn) =>
     !!character && !!turn && turn == character;
@@ -43,6 +48,9 @@
 
   function initGrid() {
     grid = [...Array(rows)].map(x => Array(cols).fill(""));
+    character = false;
+    turn = false;
+    gameOver = false;
   }
 
   function handleClick(character, turn, gameOver, i, j) {
@@ -89,4 +97,18 @@
     {/each}
     <br />
   {/each}
+
+  {#if !!!gameOver}
+    {#if !!character && !!turn}
+      {#if character === turn}
+        <p>Your turn</p>
+      {:else}
+        <p>Opponents' turn</p>
+      {/if}
+      <p>You: {character}</p>
+    {/if}
+  {:else}
+    <p>{winnerCharacter === character ? 'You win!' : 'You lose!'}</p>
+  {/if}
+
 </main>
