@@ -1,9 +1,8 @@
-# Five In A Row Client
-- Demo client game built with Svelte.
+# Five In A Row MMR Client
 
 ## Prerequisites
 - npm
-- Patchwerk MMR Server
+- Five In A Row MMR Server
 
 ## Run locally
 ```bash
@@ -17,3 +16,7 @@ To create an optimised version of the app:
 ```bash
 npm run build
 ```
+
+## Demo
+
+https://fivexo.herokuapp.com/
